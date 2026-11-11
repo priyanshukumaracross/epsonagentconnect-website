@@ -1,4 +1,6 @@
-const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+// API address: public/config.js (editable after build) wins, then VITE_API_URL at build time, else same origin.
+const RUNTIME = (typeof window !== 'undefined' && window.APP_CONFIG) || {};
+const BASE = (RUNTIME.API_URL || import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 /** Socket.IO URL: undefined = same origin (dev proxy / same-domain deploy). */
 export const SOCKET_URL = BASE || undefined;
