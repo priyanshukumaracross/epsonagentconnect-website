@@ -99,11 +99,13 @@ export default function Call({ call, mode, language, product, onEnd }) {
     api('/public/ice').then((d) => { st.ice = d.iceServers; }).catch(() => {});
     acquireMedia();
 
-    // Default transports (long-polling, upgraded to WebSocket when the host allows it) work behind cPanel/Passenger proxies
+    // Default transports: long-polling, upgraded to WebSocket when available
     const socket = io(SOCKET_URL, { auth: { callId: call.id, customerToken: call.token } });
     st.socket = socket;
     socket.on('connect_error', (err) => {
       if (err.message === 'CALL_NOT_ACTIVE' || err.message === 'UNAUTHORIZED') finish({ status: 'cancelled' });
+      // temporary server/database problem: socket.io doesn't retry these by itself
+      else if (err.message === 'SERVER_ERROR') setTimeout(() => { if (st.run === run) socket.connect(); }, 3000);
     });
     socket.on('queue:position', setQueue);
     socket.on('call:accepted', ({ agent }) => {
