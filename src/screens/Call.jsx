@@ -53,7 +53,7 @@ export default function Call({ call, mode, language, product, onEnd }) {
     const st = s.current;
     if (!st.ice) st.ice = (await api('/public/ice').catch(() => ({ iceServers: [] }))).iceServers;
     st.peer?.close();
-    st.peer = createPeer({
+    const peer = createPeer({
       iceServers: st.ice,
       localStream: st.stream,
       recvVideo: isVideo,
@@ -70,8 +70,15 @@ export default function Call({ call, mode, language, product, onEnd }) {
         }
         if (state === 'disconnected' || state === 'failed') setNetIssue(true);
       },
+      // network path broke: fetch fresh relay credentials and reconnect the same call
+      onNeedRestart: async () => {
+        const fresh = await api('/public/ice').then((d) => d.iceServers).catch(() => null);
+        if (fresh?.length) st.ice = fresh;
+        await peer.restartIce(fresh);
+      },
     });
-    await st.peer.makeOffer();
+    st.peer = peer;
+    await peer.makeOffer();
   }, [isVideo]);
 
   const acquireMedia = useCallback(async () => {
@@ -115,7 +122,10 @@ export default function Call({ call, mode, language, product, onEnd }) {
       setPhase((p) => (p === 'connected' ? p : 'connecting'));
       if (st.stream) startPeer().catch(console.error);
     });
-    socket.on('signal', (msg) => st.peer?.handle(msg).catch(console.error));
+    socket.on('signal', (msg) => {
+      if (msg?.type === 'restart-request') st.peer?.requestRestart();
+      else st.peer?.handle(msg).catch(console.error);
+    });
     socket.on('call:ended', ({ status, duration }) => finish({ status, duration }));
     socket.on('call:missed', () => finish({ status: 'missed' }));
 
