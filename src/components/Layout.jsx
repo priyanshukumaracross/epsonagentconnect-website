@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
+import epsonLogo from '../assets/epson-logo.webp';
 
 const HELPLINE = import.meta.env.VITE_HELPLINE_NUMBER || '';
 
@@ -6,7 +7,7 @@ export function Header() {
   return (
     <header className="topbar">
       <div className="brand">
-        <span className="wordmark">EPSON</span>
+        <img className="wordmark" src={epsonLogo} alt="Epson" />
         <span className="brand-sub">Expert Connect</span>
       </div>
       {HELPLINE && <a className="help-link" href={`tel:${HELPLINE.replace(/[^\d+]/g, '')}`}>Helpline</a>}

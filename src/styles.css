@@ -41,8 +41,9 @@ header.topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 20px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 5;
 }
-.brand { display: flex; align-items: baseline; gap: 10px; }
-.wordmark { font-weight: 800; font-size: 24px; letter-spacing: 1.5px; color: var(--epson-blue); font-style: italic; display: inline-block; transform: skewX(-4deg); }
+.brand { display: flex; align-items: center; gap: 10px; }
+/* Epson logo image (src/assets/epson-logo.webp) */
+.wordmark { display: block; height: 20px; width: auto; flex-shrink: 0; }
 .brand-sub { font-size: 12px; color: var(--ink-3); font-weight: 500; border-left: 1px solid var(--line); padding-left: 10px; }
 .help-link { font-size: 12px; font-weight: 600; color: var(--epson-blue); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
 
@@ -175,7 +176,7 @@ select.input:disabled { background-color: var(--bg); color: var(--ink-3); }
 }
 @media (min-width: 600px) { .call { position: absolute; border-radius: 24px; overflow: hidden; } }
 .call-top { padding: calc(18px + env(safe-area-inset-top)) 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; position: relative; z-index: 3; }
-.call-top .wordmark { color: #fff; font-size: 18px; }
+.call-top .wordmark { filter: brightness(0) invert(1); height: 16px; }
 .secure { display: flex; align-items: center; gap: 6px; opacity: .85; font-size: 12px; }
 .call-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; position: relative; z-index: 2; }
 .ring-wrap { position: relative; width: 140px; height: 140px; display: grid; place-items: center; }

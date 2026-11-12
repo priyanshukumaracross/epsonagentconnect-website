@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { api, SOCKET_URL } from '../lib/api.js';
 import { createPeer, getMedia, mediaErrorMessage } from '../lib/peer.js';
 import { FlipIcon, HangupIcon, LockIcon, MicIcon, MicOffIcon, UserIcon, VideoIcon, VideoOffIcon } from '../components/Icons.jsx';
+import epsonLogo from '../assets/epson-logo.webp';
 
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 const initials = (name) => name.split(' ').map((p) => p[0]).join('').slice(0, 2).toUpperCase();
@@ -249,7 +250,7 @@ export default function Call({ call, mode, language, product, onEnd }) {
 
   const top = (
     <div className="call-top">
-      <span className="wordmark">EPSON</span>
+      <img className="wordmark" src={epsonLogo} alt="Epson" />
       <span className="secure"><LockIcon width="12" height="12" />{isVideo ? 'Encrypted video' : 'Secure call'}</span>
     </div>
   );
