@@ -13,31 +13,48 @@ const STEPS = [
   'Connect with an Epson expert and get personalised product guidance',
 ];
 
-/** Swipeable product carousel: scroll-snap + dots, auto-advances until the customer touches it. */
+const AUTO_MS = 3000;   // time per slide
+const PAUSE_MS = 6000;  // after a swipe/tap, wait this long before auto-advancing again
+
+/** Swipeable product carousel: scroll-snap + dots, auto-advances every 3 s (pauses briefly when touched). */
 function ProductCarousel() {
   const track = useRef(null);
   const [index, setIndex] = useState(0);
-  const touched = useRef(false);
+  const touchedAt = useRef(0);
+  const target = useRef(null); // slide being scrolled to: dots jump straight to it (no flicker on the way back to slide 1)
 
   const goTo = (i) => {
     const el = track.current;
-    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    if (!el) return;
+    target.current = i;
+    setIndex(i);
+    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
   };
 
   useEffect(() => {
     const el = track.current;
-    const onScroll = () => setIndex(Math.round(el.scrollLeft / Math.max(el.clientWidth, 1)));
+    const onScroll = () => {
+      const at = Math.round(el.scrollLeft / Math.max(el.clientWidth, 1));
+      if (target.current !== null) {
+        if (at !== target.current) return; // still animating towards the target
+        target.current = null;
+      }
+      setIndex(at);
+    };
+    // a swipe by the customer overrides any running animation target
+    const onTouch = () => { target.current = null; };
+    el.addEventListener('touchstart', onTouch, { passive: true });
     el.addEventListener('scroll', onScroll, { passive: true });
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const timer = reduce ? null : setInterval(() => {
-      if (touched.current) return;
-      const next = (Math.round(el.scrollLeft / Math.max(el.clientWidth, 1)) + 1) % PRODUCTS.length;
-      el.scrollTo({ left: next * el.clientWidth, behavior: 'smooth' });
-    }, 4000);
-    return () => { el.removeEventListener('scroll', onScroll); clearInterval(timer); };
+      if (Date.now() - touchedAt.current < PAUSE_MS) return;
+      goTo((Math.round(el.scrollLeft / Math.max(el.clientWidth, 1)) + 1) % PRODUCTS.length);
+    }, AUTO_MS);
+    return () => { el.removeEventListener('scroll', onScroll); el.removeEventListener('touchstart', onTouch); clearInterval(timer); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const stop = () => { touched.current = true; };
+  const stop = () => { touchedAt.current = Date.now(); };
 
   return (
     <div className="carousel" aria-roledescription="carousel" aria-label="Epson products">
