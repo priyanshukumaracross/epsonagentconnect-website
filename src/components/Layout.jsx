@@ -15,7 +15,7 @@ export function Header() {
   );
 }
 
-const STEPS = ['Your details', 'Connect', 'Talk to expert'];
+const STEPS = ['Your Details', 'How to Connect', 'Talk to an Expert'];
 
 export function Stepper({ step }) {
   if (!step) return null;

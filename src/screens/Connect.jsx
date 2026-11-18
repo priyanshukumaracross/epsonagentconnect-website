@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { api } from '../lib/api.js';
-import { LANGUAGES } from '../data/states.js';
 import { PhoneIcon, VideoIcon } from '../components/Icons.jsx';
 
-export default function Connect({ user, mode, setMode, language, setLanguage, onEdit, onStart, busy, error }) {
+export default function Connect({ user, mode, setMode, onEdit, onStart, busy, error }) {
   const [avail, setAvail] = useState(null);
 
   useEffect(() => {
@@ -14,7 +13,6 @@ export default function Connect({ user, mode, setMode, language, setLanguage, on
     return () => { alive = false; clearInterval(t); };
   }, []);
 
-  const first = user.name.split(' ')[0];
   const available = avail?.agentsAvailable ?? 0;
   const online = avail?.agentsOnline ?? 0;
 
@@ -22,43 +20,34 @@ export default function Connect({ user, mode, setMode, language, setLanguage, on
     <section className="screen">
       <div className="content">
         <div className="greet">
-          <div className="avatar-sm">{first[0]?.toUpperCase()}</div>
+          <div className="avatar-sm">{user.name.trim()[0]?.toUpperCase()}</div>
           <div>
-            <b>Hi {first}</b>
-            <span>+91 {user.mobile.slice(0, 5)} {user.mobile.slice(5)} · {user.city}</span>
+            <b>{user.name}</b>
+            <span>+91 {user.mobile.slice(0, 5)} {user.mobile.slice(5)}</span>
           </div>
           <button className="edit-link" type="button" onClick={onEdit}>Edit</button>
         </div>
 
-        <h2 style={{ marginTop: 22 }}>How would you like to connect?</h2>
-        <p className="muted" style={{ marginTop: 4 }}>Choose your preferred way to talk to an Epson expert.</p>
+        <h2 className="connect-q">How would you like to connect?</h2>
 
-        <div className="mode-grid" role="radiogroup">
+        <div className="mode-grid" role="radiogroup" aria-label="Call type">
           <button className={`mode ${mode === 'video' ? 'on' : ''}`} type="button" role="radio" aria-checked={mode === 'video'} onClick={() => setMode('video')}>
-            <span className="rec">RECOMMENDED</span>
             <div className="ic"><VideoIcon /></div>
-            <div><b>Video call</b><span>See live product demos &amp; print samples</span></div>
+            <b>Video Call</b>
             <div className="radio" />
           </button>
           <button className={`mode ${mode === 'voice' ? 'on' : ''}`} type="button" role="radio" aria-checked={mode === 'voice'} onClick={() => setMode('voice')}>
             <div className="ic"><PhoneIcon /></div>
-            <div><b>Voice call</b><span>Quick audio consultation, low data usage</span></div>
+            <b>Voice Call</b>
             <div className="radio" />
           </button>
         </div>
 
-        <div className="section-label">Preferred language</div>
-        <div className="chips">
-          {LANGUAGES.map((l) => (
-            <button key={l.value} type="button" className={`chip ${language === l.value ? 'on' : ''}`} aria-pressed={language === l.value} onClick={() => setLanguage(l.value)}>{l.label}</button>
-          ))}
-        </div>
-
         {avail && (
           available > 0 ? (
-            <div className="availability"><span className="dot-live" /><span><b>{available} expert{available > 1 ? 's' : ''}</b> available now · Est. wait under 1 min</span></div>
+            <div className="availability"><span className="dot-live" /><span><b>{available} expert{available > 1 ? 's' : ''}</b> available now</span></div>
           ) : (
-            <div className="availability"><span className="dot-off" /><span>{online > 0 ? 'All experts are on calls right now — you’ll be next in line.' : 'Our experts are currently offline. You can still request — we’ll call you back.'}</span></div>
+            <div className="availability"><span className="dot-off" /><span>{online > 0 ? 'All experts are on calls right now. You’ll be next in line.' : 'Our experts are currently offline. You can still call, and we’ll call you back if nobody is free.'}</span></div>
           )
         )}
 

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { api, SOCKET_URL } from '../lib/api.js';
 import { createPeer, getMedia, mediaErrorMessage } from '../lib/peer.js';
-import { FlipIcon, HangupIcon, LockIcon, MicIcon, MicOffIcon, UserIcon, VideoIcon, VideoOffIcon } from '../components/Icons.jsx';
+import { FlipIcon, HangupIcon, HeadsetIcon, LockIcon, MicIcon, MicOffIcon, UserIcon, VideoIcon, VideoOffIcon } from '../components/Icons.jsx';
 import epsonLogo from '../assets/epson-logo.webp';
 
 const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
@@ -11,7 +11,7 @@ const initials = (name) => name.split(' ').map((p) => p[0]).join('').slice(0, 2)
 /**
  * phases: waiting (in queue) -> connecting (agent accepted, WebRTC negotiating) -> connected
  */
-export default function Call({ call, mode, language, product, onEnd }) {
+export default function Call({ call, mode, product, onEnd }) {
   const [phase, setPhase] = useState('waiting');
   const [mediaError, setMediaError] = useState('');
   const [queue, setQueue] = useState(null);
@@ -201,18 +201,27 @@ export default function Call({ call, mode, language, product, onEnd }) {
   };
 
   /* ---------- status line ---------- */
-  const status = phase === 'connected'
-    ? (<><span className="dot-live" /><span className="timer">{fmt(seconds)}</span></>)
-    : phase === 'connecting'
-      ? <span className="connecting-dots">Connecting</span>
-      : <span className="connecting-dots">Finding an expert</span>;
+  const status = (<><span className="dot-live" /><span className="timer">{fmt(seconds)}</span></>);
 
   const waitingInfo = phase === 'waiting' && (
     <div className="queue-info">
-      Matching you with an expert who speaks <b>{language}</b>
-      {queue && queue.position > 1 ? <> · You are <b>#{queue.position}</b> in line</> : null}
-      <div style={{ marginTop: 6, opacity: 0.8 }}>Please keep this screen open.</div>
+      {queue && queue.position > 1 ? <>You are <b>#{queue.position}</b> in line. </> : null}
+      Please keep this screen open.
     </div>
+  );
+
+  // Before the call connects: customer-service icon with sound waves on both sides
+  const bars = Array.from({ length: 4 }, (_, i) => <i key={i} />);
+  const connectingView = (
+    <>
+      <div className="expert-wait" aria-hidden="true">
+        <div className="sound-waves left">{bars}</div>
+        <div className="expert-icon"><HeadsetIcon /></div>
+        <div className="sound-waves right">{bars}</div>
+      </div>
+      <div className="call-name connecting-title">Connecting you with an Epson Expert…</div>
+      {agentName && <div className="call-role">{agentName} is joining</div>}
+    </>
   );
 
   const errorBox = mediaError && (
@@ -234,7 +243,7 @@ export default function Call({ call, mode, language, product, onEnd }) {
       <button className={`ctl ${muted ? 'on' : ''}`} type="button" onClick={toggleMute} disabled={!s.current.stream} aria-pressed={muted}>
         <span className="c">{muted ? <MicOffIcon /> : <MicIcon />}</span>{muted ? 'Unmute' : 'Mute'}
       </button>
-      {isVideo && hasLocalVideo && (
+      {isVideo && hasLocalVideo && phase === 'connected' && (
         <>
           <button className={`ctl ${camOff ? 'on' : ''}`} type="button" onClick={toggleCam} aria-pressed={camOff}>
             <span className="c">{camOff ? <VideoOffIcon /> : <VideoIcon />}</span>Camera
@@ -243,7 +252,7 @@ export default function Call({ call, mode, language, product, onEnd }) {
         </>
       )}
       <button className="ctl end" type="button" onClick={hangUp} disabled={ending}>
-        <span className="c"><HangupIcon /></span>{phase === 'waiting' ? 'Cancel' : 'End'}
+        <span className="c"><HangupIcon /></span>End Call
       </button>
     </div>
   );
@@ -251,7 +260,7 @@ export default function Call({ call, mode, language, product, onEnd }) {
   const top = (
     <div className="call-top">
       <img className="wordmark" src={epsonLogo} alt="Epson" />
-      <span className="secure"><LockIcon width="12" height="12" />{isVideo ? 'Encrypted video' : 'Secure call'}</span>
+      <span className="secure"><LockIcon width="12" height="12" />Secure Call</span>
     </div>
   );
 
@@ -260,11 +269,15 @@ export default function Call({ call, mode, language, product, onEnd }) {
       <div className="call">
         {top}
         <div className="call-center">
-          {avatar}
-          <div className="call-name">{agentName || 'Epson Expert'}</div>
-          <div className="call-role">Epson Product Specialist{product ? ` · ${product}` : ''}</div>
-          <div className="call-status">{status}</div>
-          {phase === 'connected' && <div className={`wave ${muted ? 'paused' : ''}`}>{Array.from({ length: 7 }, (_, i) => <i key={i} />)}</div>}
+          {phase === 'connected' ? (
+            <>
+              {avatar}
+              <div className="call-name">{agentName || 'Epson Expert'}</div>
+              <div className="call-role">Epson Product Specialist{product ? ` · ${product}` : ''}</div>
+              <div className="call-status">{status}</div>
+              <div className={`wave ${muted ? 'paused' : ''}`}>{Array.from({ length: 7 }, (_, i) => <i key={i} />)}</div>
+            </>
+          ) : connectingView}
           {netIssue && <div className="net-warn">Weak connection — trying to reconnect…</div>}
           {waitingInfo}
           {errorBox}
@@ -292,11 +305,15 @@ export default function Call({ call, mode, language, product, onEnd }) {
         </div>
       ) : (
         <div className="call-center">
-          {avatar}
-          <div className="call-name">{agentName || 'Epson Expert'}</div>
-          <div className="call-role">Epson Product Specialist{product ? ` · ${product}` : ''}</div>
-          <div className="call-status">{status}</div>
-          {phase === 'connected' && !hasRemoteVideo && <div className="queue-info">Expert joined with audio only</div>}
+          {phase === 'connected' ? (
+            <>
+              {avatar}
+              <div className="call-name">{agentName || 'Epson Expert'}</div>
+              <div className="call-role">Epson Product Specialist{product ? ` · ${product}` : ''}</div>
+              <div className="call-status">{status}</div>
+              {!hasRemoteVideo && <div className="queue-info">Expert joined with audio only</div>}
+            </>
+          ) : connectingView}
           {waitingInfo}
           {errorBox}
         </div>

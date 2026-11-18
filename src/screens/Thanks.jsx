@@ -7,7 +7,7 @@ const RATE_TXT = ['Tap a star to rate', 'We’re sorry — we’ll improve', 'Th
 const fmt = (s) => `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, '0')}s`;
 const ref = (id) => `EPS-${id.slice(0, 8).toUpperCase()}`;
 
-export default function Thanks({ call, result, user, mode, language, onRetry, onDone }) {
+export default function Thanks({ call, result, user, mode, onRetry, onDone }) {
   const toast = useToast();
   const [rating, setRating] = useState(0);
   const [sent, setSent] = useState({});
@@ -41,7 +41,7 @@ export default function Thanks({ call, result, user, mode, language, onRetry, on
           </p>
           <div className="summary">
             <div className="r"><span>Reference ID</span><b>{ref(call.id)}</b></div>
-            <div className="r"><span>Requested</span><b>{mode === 'video' ? 'Video' : 'Voice'} · {language}</b></div>
+            <div className="r"><span>Requested</span><b>{mode === 'video' ? 'Video call' : 'Voice call'}</b></div>
           </div>
           <button type="button" className={`na ${sent.callback ? 'done' : ''}`} style={{ width: '100%', marginTop: 18, display: 'flex', gap: 12, alignItems: 'center' }}
             onClick={() => request('callback', `We’ll call you on +91 ${user.mobile}`)}>
@@ -67,7 +67,7 @@ export default function Thanks({ call, result, user, mode, language, onRetry, on
         <div className="summary">
           <div className="r"><span>Reference ID</span><b>{ref(call.id)}</b></div>
           <div className="r"><span>Expert</span><b>{result.agentName || '—'}</b></div>
-          <div className="r"><span>Call type</span><b>{mode === 'video' ? 'Video' : 'Voice'} · {language}</b></div>
+          <div className="r"><span>Call type</span><b>{mode === 'video' ? 'Video call' : 'Voice call'}</b></div>
           <div className="r"><span>Duration</span><b>{fmt(result.duration || 0)}</b></div>
         </div>
 

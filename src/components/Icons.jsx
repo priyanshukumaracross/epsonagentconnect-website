@@ -35,3 +35,37 @@ export const PrinterArt = (p) => (
     <rect x="28" y="55" width="30" height="2" rx="1" fill="#c9d2e3" /><rect x="28" y="59" width="22" height="2" rx="1" fill="#c9d2e3" />
   </svg>
 );
+
+export const ProjectorArt = (p) => (
+  <svg viewBox="0 0 92 72" fill="none" {...p}>
+    <path d="M58 30 L90 10 L90 50 Z" fill="#cfe0ff" opacity=".7" />
+    <rect x="6" y="22" width="60" height="30" rx="8" fill="#1b2438" />
+    <rect x="6" y="22" width="60" height="9" rx="6" fill="#2a3550" />
+    <circle cx="50" cy="37" r="11" fill="#2a3550" stroke="#c9d2e3" strokeWidth="2" />
+    <circle cx="50" cy="37" r="6" fill="#003399" />
+    <circle cx="48" cy="35" r="2" fill="#9fc1ff" />
+    <rect x="14" y="38" width="18" height="3" rx="1.5" fill="#4a5568" /><rect x="14" y="44" width="12" height="3" rx="1.5" fill="#4a5568" />
+    <circle cx="33" cy="27" r="1.6" fill="#12a150" />
+    <rect x="12" y="52" width="8" height="5" rx="1.5" fill="#1b2438" /><rect x="52" y="52" width="8" height="5" rx="1.5" fill="#1b2438" />
+  </svg>
+);
+
+export const ScannerArt = (p) => (
+  <svg viewBox="0 0 92 72" fill="none" {...p}>
+    <rect x="8" y="8" width="76" height="14" rx="4" fill="#2a3550" transform="rotate(-8 8 22)" />
+    <rect x="6" y="24" width="80" height="34" rx="6" fill="#1b2438" />
+    <rect x="12" y="29" width="68" height="20" rx="2" fill="#dbe6fb" />
+    <rect x="12" y="38" width="68" height="3" fill="#00b4e6" opacity=".8" />
+    <rect x="62" y="52" width="16" height="3" rx="1.5" fill="#003399" />
+    <circle cx="14" cy="53.5" r="1.8" fill="#12a150" />
+    <rect x="12" y="58" width="68" height="4" rx="2" fill="#c9d2e3" />
+  </svg>
+);
+
+export const HeadsetIcon = (p) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}>
+    <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+    <rect x="2.5" y="13" width="4" height="7" rx="1.5" /><rect x="17.5" y="13" width="4" height="7" rx="1.5" />
+    <path d="M19.5 20c0 1.5-2 2.5-5 2.5h-2" />
+  </svg>
+);
