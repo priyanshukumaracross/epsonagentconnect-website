@@ -90,6 +90,14 @@ export default function Welcome({ store, onStart }) {
 
       <ProductCarousel />
 
+      {/* Button right under the carousel so it's visible without scrolling */}
+      <div className="start-cta">
+        <button className="btn btn-primary" type="button" onClick={onStart}>
+          Get Started Now <ArrowIcon width="18" height="18" />
+        </button>
+        <p className="tiny center">Available Monday to Saturday, 10:00 AM to 6:00 PM</p>
+      </div>
+
       <div className="content">
         <div className="how">
           <h3>How it Works?</h3>
@@ -100,12 +108,6 @@ export default function Welcome({ store, onStart }) {
         </div>
       </div>
 
-      <div className="footer-cta">
-        <button className="btn btn-primary" type="button" onClick={onStart}>
-          Get Started Now <ArrowIcon width="18" height="18" />
-        </button>
-        <p className="tiny center" style={{ marginTop: 10 }}>Available Monday to Saturday, 10:00 AM to 6:00 PM</p>
-      </div>
     </section>
   );
 }

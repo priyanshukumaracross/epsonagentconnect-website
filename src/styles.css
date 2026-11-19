@@ -95,10 +95,11 @@ h2 { font-size: 20px; font-weight: 700; letter-spacing: -.2px; }
 .store-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; }
 .hero h1 { margin-top: 18px; font-size: 28px; }
 .hero p { margin-top: 10px; opacity: .85; font-size: 15px; max-width: 340px; }
-.hero { padding-bottom: 32px; }
+.hero { padding: 22px 20px 26px; }
+.hero h1 { margin-top: 14px; }
 
 /* product carousel (Printers, Projectors, Scanners) */
-.carousel { padding: 20px 0 0; }
+.carousel { padding: 16px 0 0; }
 .carousel-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
 .carousel-track::-webkit-scrollbar { display: none; }
 .product-slide { flex: 0 0 100%; scroll-snap-align: start; padding: 0 20px; display: flex; gap: 16px; align-items: center; }
@@ -111,6 +112,8 @@ h2 { font-size: 20px; font-weight: 700; letter-spacing: -.2px; }
 .carousel-dots button { width: 8px; height: 8px; border-radius: 999px; background: var(--line); transition: all .25s; padding: 0; }
 .carousel-dots button.on { width: 22px; background: var(--epson-blue); }
 
+.start-cta { padding: 14px 20px 4px; }
+.start-cta .tiny { margin-top: 8px; }
 .how { margin-top: 4px; }
 .how h3 { font-size: 18px; font-weight: 700; font-style: italic; }
 .how > .muted { margin: 2px 0 10px; }
